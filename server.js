@@ -21,6 +21,6 @@ app.get('/api/payment', function(req, res) {
   
 });
 // Listen
-var port = 80;
+var port = 3000;
 app.listen(port);
 console.log('Listening on localhost:'+ port);
