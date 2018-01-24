@@ -11,7 +11,7 @@ app.get('/api/payment', function(req, res) {
   var mobilenumber = req.param('mobilenumber');
   var email = req.param('email');
   var merchantId = req.param('merchantId');
-  if(!transactionID && !amount && !mobilenumber && !email && !merchantId){
+  if(!transactionID || !amount || !mobilenumber || !email || !merchantId){
 	var json = {"status":"0","message":"required complete param(s)"};
 	
   }else{
