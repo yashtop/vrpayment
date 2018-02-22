@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>JavaScript - A-Frame School</title>
+    <meta name="description" content="JavaScript - A-Frame School">
+    
+    <script src="https://aframe.io/releases/0.7.0/aframe.min.js"></script>
+    <script>
+      var globalCounter = 0;
+	  
+      AFRAME.registerComponent('handle-events', {
+        init: function () {
+        
+          var sceneEl = document.querySelector('a-scene');
+          
+          sceneEl.querySelector('a-box').setAttribute('color', 'orange');
+          
+          var quantityEl = sceneEl.querySelector('#quantity');
+          var plusButtonEl = sceneEl.querySelector('#plusButton');
+          
+          console.log(quantityEl);
+          
+          plusButtonEl.addEventListener('increment', function () {
+            globalCounter++;
+            quantityEl.setAttribute('value', globalCounter);
+          });
+
+        
+          var el = this.el;  // <a-box>
+          el.addEventListener('mouseenter', function () {
+            el.setAttribute('color', '#24CAFF');
+            plusButtonEl.emit('increment');
+          });
+          el.addEventListener('mouseleave', function () {
+            el.setAttribute('color', 'green');  
+          });
+        } 
+      });
+    </script>
+
+    
+  </head>
+  <body>
+    <a-scene school-playground>
+<!--      <a-box position="-1 0.5 -3" rotation="0 45 0" color="#4CC3D9"></a-box>
+      <a-sphere position="0 1.25 -5" radius="1.25" color="#EF2D5E"></a-sphere>
+      <a-cylinder position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D"></a-cylinder>
+      <a-plane position="0 0 -4" rotation="-90 0 0" width="4" height="4" color="#7BC8A4"></a-plane>
+      
+      <a-box color="red" rotation="0 45 45" scale="1 1 1"></a-box> -->
+      <a-box position="-1 0.5 -3" rotation="0 45 0" color="#4CC3D9"></a-box>
+      
+      <a-sphere id="plusButton" position="0 1.25 -5" radius="0.25" color="green" handle-events></a-sphere>
+      
+      <a-camera><a-cursor></a-cursor></a-camera>
+      
+      <a-text id="quantity" value="0" position="1 0.75 -3" radius="0.5" height="1.5" color="red" ></a-text>
+      
+      <a-sky color="#ECECEC"></a-sky>
+    </a-scene>
+  </body>
+</html>

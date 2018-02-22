@@ -1,0 +1,169 @@
+<!doctype html>
+<html>
+<head>
+  	<meta charset="utf-8">
+  	<title>A-Frame GUI All Compnents</title>
+    <script src="https://aframe.io/releases/0.6.0/aframe.min.js"></script>
+	<link href="https://fonts.googleapis.com/css?family=Fira+Sans" rel="stylesheet">
+	<style type="text/css">
+		@font-face{
+			font-family:"Ionicons";
+
+			src:url("assets/fonts/ionicons.eot?v=2.0.1");
+			src:url("assets/fonts/ionicons.eot?v=2.0.1#iefix") format("embedded-opentype"),url("assets/fonts/ionicons.ttf?v=2.0.1") format("truetype"),url("assets/fonts/ionicons.woff?v=2.0.1") format("woff"),url("assets/fonts/ionicons.svg?v=2.0.1#Ionicons") format("svg");
+
+			font-weight:normal;
+			font-style:normal
+		}
+		body{font-family:Ionicons;}
+		.visuallyhidden {
+			display: block;
+			border: 0;
+			clip: rect(0 0 0 0);
+			height: 1px;
+			width: 1px;
+			margin: -1px;
+			padding: 0;
+			overflow: hidden;
+			position: absolute !important;
+		}
+	</style>
+
+    <script src="js/aframe-gui.js"></script>
+    <script src="js/fontfaceobserver.js"></script>
+	<script>
+	(function() {
+
+		// Optimization for Repeat Views
+		if( sessionStorage.criticalFoftFontsLoaded ) {
+			console.log("fonts are already loaded");
+			return;
+		}
+
+		var guiWebFont = new FontFaceObserver('Fira Sans');
+
+		Promise.all([guiWebFont.load()]).then(function () {
+			console.log("fonts are loaded");
+			// Optimization for Repeat Views
+			sessionStorage.criticalFoftFontsLoaded = true;
+		});
+	})();
+  function addButtonAction(valId){
+    console.log(valId.id)
+    itemArr[valId.id].qty = itemArr[valId.id].qty+1;
+    var price = itemArr[valId.id].qty +' X '+ itemArr[valId.id].price;
+    var el = document.getElementById('txtP-'+valId.id);
+    el.setAttribute('value',price)
+  }
+  function remButtonAction(valId){
+    var elCont = document.getElementById('cartCont');
+    var childN = document.getElementById('sub-'+valId.id);
+    itemArr[valId.id].qty = itemArr[valId.id].qty-1;
+    if(itemArr[valId.id].qty==0){
+      elCont.removeChild(childN);
+    }else{
+      var price = itemArr[valId.id].qty +' X '+ itemArr[valId.id].price;
+      var el = document.getElementById('txtP-'+valId.id);
+      el.setAttribute('value',price)
+    }
+  }
+  AFRAME.registerComponent('set-cart', {
+      schema: {default:''},
+      init() {
+  	this.el.addEventListener('click', () => {
+      if(itemArr[this.el.id].flag==false){
+      itemArr[this.el.id].flag=true;
+      var yL = 3.5 - count;
+      var elCont = document.getElementById('cartCont');
+      var el = document.createElement('a-entity');
+      el.setAttribute('id','sub-'+this.el.id);
+      var elBtnPlus = document.createElement('a-gui-button');
+      elBtnPlus.setAttribute('width',0.20);
+      elBtnPlus.setAttribute('height',0.20);
+      elBtnPlus.setAttribute('onclick','addButtonAction('+this.el.id+')');
+      elBtnPlus.setAttribute('value','+');
+      elBtnPlus.setAttribute('font-family','Arial');
+      elBtnPlus.setAttribute('position',{x: 0, y: yL, z: -4});
+      el.appendChild(elBtnPlus);
+
+      var elPriceText = document.createElement('a-text');
+      elPriceText.setAttribute('width',1.75);
+      elPriceText.setAttribute('height',1.5);
+      elPriceText.setAttribute('color','#990000');
+      elPriceText.setAttribute('id','txtP-'+this.el.id);
+      elPriceText.setAttribute('value',itemArr[this.el.id].qty+' X '+itemArr[this.el.id].price);
+      elPriceText.setAttribute('position',{x: 0.25, y: yL, z: -4});
+      el.appendChild(elPriceText);
+
+      var elItemName = document.createElement('a-text');
+      elItemName.setAttribute('width',1.75);
+      elItemName.setAttribute('height',1.5);
+      elItemName.setAttribute('color','#990000');
+      elItemName.setAttribute('id','txtN-'+itemArr[this.el.id]);
+      elItemName.setAttribute('value',itemArr[this.el.id].name);
+      elItemName.setAttribute('position',{x: 1, y: yL, z: -4});
+      el.appendChild(elItemName);
+
+      var elBtnMin = document.createElement('a-gui-button');
+      elBtnMin.setAttribute('width',0.20);
+      elBtnMin.setAttribute('height',0.20);
+      elBtnMin.setAttribute('onclick','remButtonAction('+this.el.id+')');
+      elBtnMin.setAttribute('value','-');
+      elBtnMin.setAttribute('font-family','Arial');
+      elBtnMin.setAttribute('position',{x: 1.75, y: yL, z: -4});
+      el.appendChild(elBtnMin);
+      elCont.appendChild(el);
+      itemArr[this.el.id].name = true;
+      count = count+0.25;
+    }
+  	})
+      }
+    });
+    var count = 0;
+    var itemArr = {'item1':{'qty':1,'price':1,'name':'Bread','flag':false},
+    'item2':{'qty':1,'price':1.5,'name':'Rice','flag':false},
+    'item3':{'qty':1,'price':2,'name':'Dal','flag':false}
+  }
+	</script>
+
+
+
+</head>
+<body>
+	<a-scene>
+		<a-assets>
+			<!-- Text Canvas -->
+			<canvas id="canvasObj" crossorigin="anonymous" webkit-playsinline=""></canvas>
+			<img id="gradient" src="assets/gradient.png">
+			<img id="ground" src="assets/ground.png">
+			<a-asset-item id="iconfont" src="assets/fonts/ionicons.ttf"></a-asset-item>
+		</a-assets>
+
+		<a-light type="directional" color="#FFF" intensity="1" position="-1 1 2"> </a-light>
+		<a-light type="ambient" color="#ebd9e9"> </a-light>
+		<a-sky src="#gradient"></a-sky>
+  		<a-image position="0 -.025 0" height="300" width="300" rotation="90 0 0" src="#ground" repeat="300 300" material="color:#ebd9e9"></a-image>
+
+<a-image src="images/items/main-0.jpg" id="item1" set-cart position="-2 3.2 -4" height="1" width="1"></a-image>
+<a-image src="images/items/main-1.jpg" id="item2" set-cart position="-2 2.1 -4" height="1" width="1"></a-image>
+<a-image src="images/items/main-2.jpg" id="item3" set-cart position="-2 1 -4" height="1" width="1"></a-image>
+
+
+<a-entity id="cartCont">
+
+</a-entity>
+
+
+
+
+		<!-- Camera + cursor. -->
+    <a-entity camera="userHeight: 1.6" look-controls wasd-controls-enabled mouse-cursor>
+        <a-entity position="0 0 -3" scale="0.2 0.2 0.2"  geometry="primitive: ring; radiusOuter: 0.20;radiusInner: 0.10;" material="color: #990000; shader: flat" cursor="maxDistance: 30; fuse: true">
+            <a-animation begin="click" easing="ease-in" attribute="scale" fill="backwards" from="0.1 0.1 0.1" to="1 1 1" dur="150"></a-animation>
+            <a-animation begin="fusing"  easing="ease-in" attribute="scale" fill="forwards" from="1 1 1" to="0.2 0.2 0.2" dur="1500"></a-animation>
+        </a-entity>
+    </a-entity> <!-- /camera -->
+
+	</a-scene>
+</body>
+</html>
