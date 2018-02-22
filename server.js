@@ -2,6 +2,7 @@ var express = require('express');
 var app = express();
 
 // Routes
+app.use(express.static(path.join(__dirname, 'public')));
 app.get('/', function(req, res) {
   res.send('Welcome to vr payment gateway please try http://vrpayment.fr.openode.io/api/payment?transactionID=1236666&amount=30&mobilenumber=9716841138&email=abc@email.com&merchantId=2121');
 });
